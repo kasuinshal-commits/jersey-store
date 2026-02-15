@@ -9,7 +9,7 @@ function Testimonials() {
         text: "Amazing service and fast delivery. The jersey quality exceeded my expectations. Will definitely order again! ⭐🙏",
       },
       {
-        name: "Juniad Ansari",
+        name: "Junaid Ansari",
         text: "Best place to buy jerseys at affordable prices. Great quality, nice packaging, and smooth ordering experience.",
       },
     ];
