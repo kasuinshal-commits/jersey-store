@@ -1,4 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { useState } from "react";
+
 import Store from "./pages/Store";
 import Admin from "./pages/Admin";
 import Login from "./pages/Login";
@@ -6,6 +8,10 @@ import Layout from "./components/Layout";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
+
+  // ⭐ GLOBAL CATEGORY STATE
+  const [category, setCategory] = useState("");
+
   return (
     <BrowserRouter>
       <Routes>
@@ -14,28 +20,28 @@ function App() {
         <Route
           path="/"
           element={
-            <Layout>
-              <Store />
+            <Layout setCategory={setCategory}>
+              <Store category={category} />
             </Layout>
           }
         />
 
-        {/* LOGIN PAGE */}
+        {/* LOGIN */}
         <Route
           path="/login"
           element={
-            <Layout>
+            <Layout setCategory={setCategory}>
               <Login />
             </Layout>
           }
         />
 
-        {/* PROTECTED ADMIN */}
+        {/* ADMIN */}
         <Route
           path="/admin"
           element={
             <ProtectedRoute>
-              <Layout>
+              <Layout setCategory={setCategory}>
                 <Admin />
               </Layout>
             </ProtectedRoute>

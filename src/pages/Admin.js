@@ -20,6 +20,10 @@ function Admin() {
   const [editingId, setEditingId] = useState(null);
   const [loading, setLoading] = useState(false);
 
+  // ⭐ NEW STATES
+  const [size, setSize] = useState([]); // checkbox multiple values
+  const [category, setCategory] = useState("");
+
   useEffect(() => {
     fetchShirts();
   }, []);
@@ -30,7 +34,7 @@ function Admin() {
     setShirts(snap.docs.map((doc) => ({ id: doc.id, ...doc.data() })));
   };
 
-  // ---------- UPLOAD IMAGE ----------
+  // ---------- CLOUDINARY UPLOAD ----------
   const uploadImage = async () => {
     if (!file) return null;
 
@@ -63,21 +67,26 @@ function Admin() {
 
     try {
       if (editingId) {
-        // update
+        // UPDATE
         const ref = doc(db, "shirts", editingId);
+
         await updateDoc(ref, {
           name,
           description,
           price,
+          size,
+          category,
           ...(imageUrl && { image: imageUrl }),
         });
       } else {
-        // create
+        // CREATE
         await addDoc(collection(db, "shirts"), {
           name,
           description,
           price,
           image: imageUrl,
+          size,
+          category,
           createdAt: new Date(),
         });
       }
@@ -105,14 +114,19 @@ function Admin() {
     setName(shirt.name);
     setDescription(shirt.description);
     setPrice(shirt.price);
+    setSize(shirt.size || []);
+    setCategory(shirt.category || "");
   };
 
+  // ---------- RESET ----------
   const resetForm = () => {
     setEditingId(null);
     setName("");
     setDescription("");
     setPrice("");
     setFile(null);
+    setSize([]);
+    setCategory("");
   };
 
   // ---------- ANALYTICS ----------
@@ -130,6 +144,7 @@ function Admin() {
         <div className="bg-white shadow p-4 rounded">
           Total Products: {totalProducts}
         </div>
+
         <div className="bg-white shadow p-4 rounded">
           Total Value: ₹{totalValue}
         </div>
@@ -142,6 +157,8 @@ function Admin() {
         </h2>
 
         <form onSubmit={handleSubmit} className="space-y-4">
+
+          {/* NAME */}
           <input
             placeholder="Name"
             value={name}
@@ -149,6 +166,7 @@ function Admin() {
             className="w-full border p-3 rounded"
           />
 
+          {/* DESCRIPTION */}
           <textarea
             placeholder="Description"
             value={description}
@@ -156,6 +174,7 @@ function Admin() {
             className="w-full border p-3 rounded"
           />
 
+          {/* PRICE */}
           <input
             type="number"
             placeholder="Price"
@@ -164,14 +183,58 @@ function Admin() {
             className="w-full border p-3 rounded"
           />
 
+          {/* IMAGE */}
           <input
             type="file"
             onChange={(e) => setFile(e.target.files[0])}
           />
 
+          {/* SIZE CHECKBOX */}
+          <div>
+            <p className="font-semibold mb-2">Select Sizes</p>
+
+            <div className="flex gap-4">
+              {["S", "M", "L", "XL", "XXL"].map((s) => (
+                <label key={s} className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    checked={size.includes(s)}
+                    onChange={(e) => {
+                      if (e.target.checked) {
+                        setSize([...size, s]);
+                      } else {
+                        setSize(size.filter((item) => item !== s));
+                      }
+                    }}
+                  />
+                  {s}
+                </label>
+              ))}
+            </div>
+          </div>
+
+          {/* CATEGORY */}
+          <select
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+            className="w-full border p-3 rounded"
+          >
+            <option value="">Select Category</option>
+            <option>First copy</option>
+            <option>Master copy</option>
+            <option>Player version</option>
+            <option>Retro</option>
+            <option>Fan version</option>
+            <option>Special Set</option>
+            <option>Kids Set</option>
+            <option>Other</option>
+          </select>
+
+          {/* BUTTON */}
           <button className="w-full bg-black text-white py-3 rounded">
             {loading ? "Saving..." : editingId ? "Update" : "Upload"}
           </button>
+
         </form>
       </div>
 
@@ -190,6 +253,19 @@ function Admin() {
 
             <h3 className="font-bold mt-2">{shirt.name}</h3>
             <p className="text-gray-500">{shirt.description}</p>
+
+            {shirt.size && (
+              <p className="text-sm text-gray-600">
+                Sizes: {shirt.size.join(", ")}
+              </p>
+            )}
+
+            {shirt.category && (
+              <p className="text-sm text-blue-500">
+                {shirt.category}
+              </p>
+            )}
+
             <p className="font-bold text-green-600">₹{shirt.price}</p>
 
             <div className="flex gap-2 mt-3">
@@ -207,6 +283,7 @@ function Admin() {
                 Delete
               </button>
             </div>
+
           </div>
         ))}
       </div>

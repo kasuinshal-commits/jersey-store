@@ -1,15 +1,15 @@
 function Testimonials() {
     const reviews = [
       {
-        name: "Inshal",
+        name: "Abdulla Ansari",
         text: "Received my jersey today and the quality is excellent. The fabric feels premium and the fitting is perfect. Highly recommended!",
       },
       {
-        name: "Umair",
+        name: "Umair Shaikh",
         text: "Amazing service and fast delivery. The jersey quality exceeded my expectations. Will definitely order again! ⭐🙏",
       },
       {
-        name: "Juniad",
+        name: "Juniad Ansari",
         text: "Best place to buy jerseys at affordable prices. Great quality, nice packaging, and smooth ordering experience.",
       },
     ];

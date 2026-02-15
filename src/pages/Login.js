@@ -10,7 +10,7 @@ function Login() {
     e.preventDefault();
 
     // CHANGE THESE
-    if (email === "admin@jersey.com" && password === "123456") {
+    if (email === "Talha@jersey.com" && password === "Talando07") {
       localStorage.setItem("admin", "true");
       navigate("/admin");
     } else {
